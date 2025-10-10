@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from ..models import AdReport, ImportJob
+from models import AdReport, ImportJob
 import pandas as pd
 import io
 import uuid
