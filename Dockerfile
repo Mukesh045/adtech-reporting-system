@@ -1,8 +1,8 @@
 FROM python:3.11-slim
 
-COPY . /app
+COPY adreport/backend /app
 
-WORKDIR /app/adreport/backend
+WORKDIR /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
