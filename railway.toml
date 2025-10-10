@@ -1,5 +1,6 @@
 [build]
 builder = "NIXPACKS"
+nixpacksProviders = ["python"]
 buildCommand = "pip install -r adreport/backend/requirements.txt"
 
 [deploy]
