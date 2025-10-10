@@ -32,15 +32,19 @@ app.add_middleware(
 @app.on_event("startup")
 async def on_startup():
     """Initialize database connection and Beanie ODM on app startup."""
-    mongodb_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+    mongodb_url = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
     logger.info(f"Connecting to MongoDB at {mongodb_url}")
     client = motor.motor_asyncio.AsyncIOMotorClient(
         mongodb_url)
     database = client.get_database("adtech_reports")  # Or get from .env
 
     # Initialize Beanie with the AdReport document model
-    await init_beanie(database=database, document_models=[AdReport, SavedReport])
-    logger.info("Database connection and Beanie initialization completed")
+    try:
+        await init_beanie(database=database, document_models=[AdReport, SavedReport])
+        logger.info("Database connection and Beanie initialization completed")
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+        raise
 
 @app.get( "/")
 async def root():
