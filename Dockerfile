@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-COPY adreport/backend /app
+COPY backend /app
 
 WORKDIR /app
 
