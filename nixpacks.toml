@@ -2,7 +2,7 @@
 nixPkgs = ['python311']
 
 [phases.build]
-cmds = ['pip install -r adreport/backend/requirements.txt']
+cmds = ['cd /app && pip install -r adreport/backend/requirements.txt']
 
 [phases.run]
-cmds = ['cd adreport/backend && uvicorn main:app --host 0.0.0.0 --port $PORT']
+cmds = ['cd /app/adreport/backend && uvicorn main:app --host 0.0.0.0 --port $PORT']
