@@ -44,7 +44,7 @@ async def on_startup():
         logger.info("Database connection and Beanie initialization completed")
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
-        raise
+        # Continue without raising to allow app to start
 
 @app.get( "/")
 async def root():
