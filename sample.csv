@@ -1,0 +1,3 @@
+date,mobile_app_resolved_id,mobile_app_name,domain,ad_unit_name,ad_unit_id,inventory_format_name,operating_system_version_name,ad_exchange_total_requests,ad_exchange_responses_served,ad_exchange_match_rate,ad_exchange_line_item_level_impressions,ad_exchange_line_item_level_clicks,ad_exchange_line_item_level_ctr,average_ecpm,payout
+2023-01-01,12345,Test App,example.com,Banner,67890,Banner,iOS,1000,800,0.8,600,50,0.083,1.5,900
+2023-01-02,12346,Another App,test.com,Interstitial,67891,Interstitial,Android,2000,1600,0.8,1200,100,0.083,2.0,2400
