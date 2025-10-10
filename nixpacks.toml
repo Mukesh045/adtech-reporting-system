@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ['python-3.11']
+
+[phases.build]
+cmds = ['pip install -r adreport/backend/requirements.txt']
+
+[phases.run]
+cmds = ['cd adreport/backend && uvicorn main:app --host 0.0.0.0 --port $PORT']
