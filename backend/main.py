@@ -9,9 +9,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Import your Beanie model and routers
-from backend.models import AdReport, SavedReport
-from routers.data import router as data_router
-from routers.reports import router as reports_router
+from .models import AdReport, SavedReport
+from .routers.data import router as data_router
+from .routers.reports import router as reports_router
 
 load_dotenv()
 
