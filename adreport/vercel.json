@@ -1,11 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "DISABLE_ESLINT_PLUGIN=true npm run build"
-      }
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
