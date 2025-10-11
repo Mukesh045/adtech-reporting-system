@@ -47,7 +47,6 @@
     "@babel/plugin-transform-private-methods": "^7.27.1",
     "@babel/plugin-transform-private-property-in-object": "^7.27.1",
     "eslint": "^8.57.0",
-    "eslint-config-react-app": "^7.0.1",
     "svgo": "^4.0.0"
   }
 }
