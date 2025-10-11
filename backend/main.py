@@ -2,16 +2,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+import sys
+from pathlib import Path
 import motor.motor_asyncio
 from beanie import init_beanie
 import logging
 
+# Add backend directory to sys.path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
 logger = logging.getLogger(__name__)
 
 # Import your Beanie model and routers
-from .models import AdReport, SavedReport
-from .routers.data import router as data_router
-from .routers.reports import router as reports_router
+from models import AdReport, SavedReport
+from routers.data import router as data_router
+from routers.reports import router as reports_router
 
 load_dotenv()
 
