@@ -2,6 +2,7 @@
   "name": "adreport",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -23,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "build": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -46,6 +47,7 @@
     "@babel/plugin-transform-optional-chaining": "^7.27.1",
     "@babel/plugin-transform-private-methods": "^7.27.1",
     "@babel/plugin-transform-private-property-in-object": "^7.27.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-react-app": "^7.0.1",
     "svgo": "^4.0.0"
