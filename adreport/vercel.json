@@ -2,7 +2,9 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/adreport/index.html"
+      "destination": "/index.html"
     }
-  ]
+  ],
+  "outputDirectory": "build"
 }
+
