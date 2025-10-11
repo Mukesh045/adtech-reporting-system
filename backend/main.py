@@ -2,14 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
-import sys
-from pathlib import Path
 import motor.motor_asyncio
 from beanie import init_beanie
 import logging
-
-# Add backend directory to sys.path for imports
-sys.path.insert(0, str(Path(__file__).parent))
 
 logger = logging.getLogger(__name__)
 
