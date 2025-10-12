@@ -42,8 +42,7 @@ async def get_import_status(job_id: str):
 
 @router.get("/count")
 async def get_data_count():
-    collection = AdReport.get_pymongo_collection()
-    count = await collection.count_documents({})
+    count = await AdReport.find().count()
     return {"count": count}
 
 async def process_csv(job_id: str, contents: bytes):
