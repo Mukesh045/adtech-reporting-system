@@ -1,6 +1,6 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from models import AdReport, ImportJob
-import pandas as pd
+from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
+from ..models import AdReport
+gimport pandas as pd
 import io
 import uuid
 from datetime import datetime
@@ -16,7 +16,7 @@ router = APIRouter()
 import_jobs = {}
 
 @router.post("/import")
-async def import_csv(file: UploadFile = File(...)):
+async def import_csv(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
     logger.info(f"Received file upload: {file.filename}, size: {file.size}")
     if not file.filename.endswith('.csv'):
         logger.error(f"File {file.filename} is not CSV")
@@ -30,7 +30,7 @@ async def import_csv(file: UploadFile = File(...)):
     logger.info(f"Created job {job_id}")
 
     # Process in background
-    asyncio.create_task(process_csv(job_id, contents))
+    background_tasks.add_task(process_csv, job_id, contents)
 
     return {"job_id": job_id, "message": "Import started"}
 
@@ -47,18 +47,22 @@ async def get_data_count():
     return {"count": count}
 
 async def process_csv(job_id: str, contents: bytes):
+    logger.info(f"Starting background processing for job {job_id}")
     try:
         job = import_jobs[job_id]
         job['status'] = "processing"
+        logger.info(f"Job {job_id} status set to processing")
 
         # Read CSV using pandas for robustness
         df = pd.read_csv(io.BytesIO(contents), header=0, encoding='utf-8-sig')
+        logger.info(f"CSV read successfully, rows: {len(df)}")
 
         total = len(df)
         job['total_records'] = total
         
         # Clear existing data before new import
         await AdReport.delete_all()
+        logger.info(f"Cleared existing data for job {job_id}")
 
         # Map CSV columns to internal field names
         column_mapping = {
@@ -82,6 +86,7 @@ async def process_csv(job_id: str, contents: bytes):
 
         # Rename columns to internal names
         df.rename(columns=column_mapping, inplace=True)
+        logger.info(f"Columns renamed for job {job_id}")
 
         # Process in batches
         batch_size = 1000
@@ -206,6 +211,7 @@ async def process_csv(job_id: str, contents: bytes):
                 try:
                     await AdReport.insert_many(records_to_insert)
                     job['inserted'] += len(records_to_insert)
+                    logger.info(f"Inserted {len(records_to_insert)} records for batch {i//batch_size + 1}, job {job_id}")
                 except Exception as e:
                     error_msg = f"Insert failed for batch {i//batch_size + 1}: {str(e)}"
                     job['errors'].append(error_msg)
@@ -213,12 +219,14 @@ async def process_csv(job_id: str, contents: bytes):
 
             job['processed_records'] = min(i + batch_size, total)
             job['progress'] = int((job['processed_records'] / total) * 100)
+            logger.info(f"Progress for job {job_id}: {job['progress']}%")
 
         job['status'] = "completed"
         job['progress'] = 100
+        logger.info(f"Job {job_id} completed successfully, inserted {job['inserted']} records")
 
     except Exception as e:
         error_msg = f"A critical error occurred: {str(e)}"
         job['status'] = "failed"
         job['errors'].append(error_msg)
-        logger.error(error_msg)
+        logger.error(f"Critical error for job {job_id}: {error_msg}")
