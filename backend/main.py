@@ -44,7 +44,7 @@ async def on_startup():
         logger.error(f"Failed to initialize database: {e}")
         # Continue without raising to allow app to start
 
-@app.get( "/")
+@app.get("/")
 async def root():
     return {"message": "Adtech Reporting API"}
 
