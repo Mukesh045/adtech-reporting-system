@@ -1,5 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
 from ..models import AdReport
+from ..database import get_database
 import pandas as pd
 import io
 import uuid
@@ -42,7 +43,9 @@ async def get_import_status(job_id: str):
 
 @router.get("/count")
 async def get_data_count():
-    count = await AdReport.find().count()
+    db = get_database()
+    collection = db.ad_reports
+    count = await collection.count_documents({})
     return {"count": count}
 
 async def process_csv(job_id: str, contents: bytes):
