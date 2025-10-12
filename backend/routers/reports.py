@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from models import AdReport, SavedReport
+from ..models import AdReport, SavedReport
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 from datetime import date, datetime
