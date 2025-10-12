@@ -53,7 +53,7 @@ logger.info("Starting app initialization")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://adreport-frontend-itxl89sd7-mukesh-singhs-projects-92ca7639.vercel.app", "http://localhost:3000"],  # Production Vercel frontend and local dev
+    allow_origins=["https://adreport-frontend-new.vercel.app", "https://adreport-frontend-itxl89sd7-mukesh-singhs-projects-92ca7639.vercel.app", "http://localhost:3000"],  # Production Vercel frontends and local dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
