@@ -7,6 +7,9 @@ import motor.motor_asyncio
 from beanie import init_beanie
 import logging
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
 # Add parent directory to sys.path to import models from root
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
