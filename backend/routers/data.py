@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
 from ..models import AdReport
-gimport pandas as pd
+import pandas as pd
 import io
 import uuid
 from datetime import datetime
