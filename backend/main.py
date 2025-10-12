@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 # Import your Beanie model and routers
 try:
     logger.info("Attempting to import models")
-    from models import AdReport, SavedReport
+    from ..models import AdReport, SavedReport
     logger.info("Models imported successfully")
 except Exception as e:
     logger.error(f"Failed to import models: {e}")
@@ -20,7 +20,7 @@ except Exception as e:
 
 try:
     logger.info("Attempting to import data router")
-    from routers.data import router as data_router
+    from .routers.data import router as data_router
     logger.info("Data router imported successfully")
 except Exception as e:
     logger.error(f"Failed to import data router: {e}")
@@ -28,7 +28,7 @@ except Exception as e:
 
 try:
     logger.info("Attempting to import reports router")
-    from routers.reports import router as reports_router
+    from .routers.reports import router as reports_router
     logger.info("Reports router imported successfully")
 except Exception as e:
     logger.error(f"Failed to import reports router: {e}")
