@@ -35,7 +35,7 @@
 - [x] Commit and push removal of Dockerfile
 - [x] Add runtime.txt with python-3.11 to force Python build on Railway (fix npm ci error)
 - [x] Commit and push runtime.txt
-- [ ] Check new Railway logs for successful Python build, startup without port error, and custom logs (imports, DB connection)
-- [ ] Test /health endpoint via curl or browser
-- [ ] Test API endpoints (e.g., /api/reports/dimensions)
-- [ ] Update TODO_IMPROVEMENTS.md to mark deployment task as complete
+- [x] Check new Railway logs for successful Python build, startup without port error, and custom logs (imports, DB connection)
+- [x] Test /health endpoint via curl or browser
+- [x] Test API endpoints (e.g., /api/reports/dimensions)
+- [x] Update TODO_IMPROVEMENTS.md to mark deployment task as complete

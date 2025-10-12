@@ -6,7 +6,7 @@
 - [ ] Add virtual scrolling to report data table
 - [ ] Implement save/load report configurations (frontend and backend)
 - [ ] Add database migration support
-- [ ] Set up deployment for backend (Railway) and frontend (Vercel)
+- [x] Set up deployment for backend (Railway) and frontend (Vercel)
 - [ ] Test all new features
 
 ## Details
