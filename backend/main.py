@@ -2,16 +2,20 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+import sys
 import motor.motor_asyncio
 from beanie import init_beanie
 import logging
+
+# Add parent directory to sys.path to import models from root
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger = logging.getLogger(__name__)
 
 # Import your Beanie model and routers
 try:
     logger.info("Attempting to import models")
-    from ..models import AdReport, SavedReport
+    from models import AdReport, SavedReport
     logger.info("Models imported successfully")
 except Exception as e:
     logger.error(f"Failed to import models: {e}")
