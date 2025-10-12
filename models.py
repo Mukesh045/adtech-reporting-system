@@ -1,8 +1,11 @@
 from beanie import Document
-from datetime import date
+from pydantic import BaseModel
+from typing import Optional, List
+from datetime import date, datetime
 from pymongo import IndexModel, ASCENDING
 
 class AdReport(Document):
+    report_id: str
     mobile_app_resolved_id: str
     mobile_app_name: str
     domain: str
@@ -21,10 +24,33 @@ class AdReport(Document):
     payout: float = 0.0
 
     class Settings:
-        name = "ad_reports"  # This is the collection name
+        name = "ad_reports"
         indexes = [
             # Index for fast date-range filtering
             IndexModel([("date", ASCENDING)]),
             # Compound index for common grouping/filtering scenarios
             IndexModel([("date", ASCENDING), ("mobile_app_name", ASCENDING)]),
+            # Additional indexes for other common dimensions
+            IndexModel([("domain", ASCENDING)]),
+            IndexModel([("ad_unit_name", ASCENDING)]),
+            IndexModel([("inventory_format_name", ASCENDING)]),
+            # Index for report_id filtering
+            IndexModel([("report_id", ASCENDING)]),
         ]
+class ImportJob(BaseModel):
+    job_id: str
+    status: str  # pending, processing, completed, failed
+    progress: int  # 0-100
+    total_records: Optional[int] = None
+    processed_records: Optional[int] = None
+    errors: List[str] = []
+
+class SavedReport(Document):
+    name: str
+    dimensions: List[str]
+    metrics: List[str]
+    date_range: Optional[dict] = None  # {"start": "YYYY-MM-DD", "end": "YYYY-MM-DD"}
+    created_at: datetime
+
+    class Settings:
+        name = "saved_reports"
