@@ -9,9 +9,30 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Import your Beanie model and routers
-from models import AdReport, SavedReport
-from routers.data import router as data_router
-from routers.reports import router as reports_router
+try:
+    logger.info("Attempting to import models")
+    from models import AdReport, SavedReport
+    logger.info("Models imported successfully")
+except Exception as e:
+    logger.error(f"Failed to import models: {e}")
+    AdReport = None
+    SavedReport = None
+
+try:
+    logger.info("Attempting to import data router")
+    from routers.data import router as data_router
+    logger.info("Data router imported successfully")
+except Exception as e:
+    logger.error(f"Failed to import data router: {e}")
+    data_router = None
+
+try:
+    logger.info("Attempting to import reports router")
+    from routers.reports import router as reports_router
+    logger.info("Reports router imported successfully")
+except Exception as e:
+    logger.error(f"Failed to import reports router: {e}")
+    reports_router = None
 
 load_dotenv()
 
@@ -20,6 +41,7 @@ db_connected = False
 app = FastAPI(
     title="Adtech Reporting API", version="1.0.0")
 
+logger.info("FastAPI app created successfully")
 logger.info("Starting app initialization")
 
 app.add_middleware(
@@ -43,10 +65,14 @@ async def on_startup():
 
     # Initialize Beanie with the AdReport document model
     try:
-        await init_beanie(database=database, document_models=[AdReport, SavedReport])
-        global db_connected
-        db_connected = True
-        logger.info("Database connection and Beanie initialization completed")
+        if AdReport and SavedReport:
+            await init_beanie(database=database, document_models=[AdReport, SavedReport])
+            global db_connected
+            db_connected = True
+            logger.info("Database connection and Beanie initialization completed")
+        else:
+            logger.warning("Skipping Beanie init due to missing models")
+            db_connected = False
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
         # Continue without raising to allow app to start
@@ -62,7 +88,14 @@ async def health():
     return {"status": "healthy" if db_connected else "unhealthy", "db_connected": db_connected}
 
 # Include the routers in the application
-logger.info("Including data router")
-app.include_router(data_router, prefix="/api/data", tags=["data"])
-logger.info("Including reports router")
-app.include_router(reports_router, prefix="/api/reports", tags=["reports"])
+if data_router:
+    logger.info("Including data router")
+    app.include_router(data_router, prefix="/api/data", tags=["data"])
+else:
+    logger.warning("Skipping data router include due to import failure")
+
+if reports_router:
+    logger.info("Including reports router")
+    app.include_router(reports_router, prefix="/api/reports", tags=["reports"])
+else:
+    logger.warning("Skipping reports router include due to import failure")
