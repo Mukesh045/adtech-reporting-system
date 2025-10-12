@@ -45,6 +45,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Reports: React.FC = () => {
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
   const [dimensions, setDimensions] = useState<string[]>([]);
   const [metrics, setMetrics] = useState<string[]>([]);
   const [selectedDimensions, setSelectedDimensions] = useState<string[]>([]);
@@ -69,8 +70,8 @@ const Reports: React.FC = () => {
   const fetchDimensionsAndMetrics = async (): Promise<void> => {
     try {
       const [dimRes, metRes] = await Promise.all([
-        axios.get<string[]>("http://localhost:8000/api/reports/dimensions"),
-        axios.get<string[]>("http://localhost:8000/api/reports/metrics"),
+        axios.get<string[]>(`${apiBaseUrl}/api/reports/dimensions`),
+        axios.get<string[]>(`${apiBaseUrl}/api/reports/metrics`),
       ]);
       setDimensions(dimRes.data);
       setMetrics(metRes.data);
@@ -102,7 +103,7 @@ const Reports: React.FC = () => {
       };
 
       const response = await axios.post<ReportResponse>(
-        "http://localhost:8000/api/reports/query",
+        `${apiBaseUrl}/api/reports/query`,
         request
       );
       setData(response.data.data);
@@ -133,7 +134,7 @@ const Reports: React.FC = () => {
         };
       }
       const response = await axios.post(
-        "http://localhost:8000/api/reports/export",
+        `${apiBaseUrl}/api/reports/export`,
         request,
         { responseType: "blob" }
       );
@@ -181,7 +182,7 @@ const Reports: React.FC = () => {
           : undefined,
       };
       await axios.post(
-        "http://localhost:8000/api/reports/saved-reports",
+        `${apiBaseUrl}/api/reports/saved-reports`,
         request
       );
       message.success("Report saved successfully");
@@ -196,7 +197,7 @@ const Reports: React.FC = () => {
   const fetchSavedReports = async (): Promise<void> => {
     try {
       const response = await axios.get<SavedReport[]>(
-        "http://localhost:8000/api/reports/saved-reports"
+        `${apiBaseUrl}/api/reports/saved-reports`
       );
       setSavedReports(response.data);
     } catch (error) {
@@ -222,7 +223,7 @@ const Reports: React.FC = () => {
   const handleDeleteReport = async (reportId: string): Promise<void> => {
     try {
       await axios.delete(
-        `http://localhost:8000/api/reports/saved-reports/${reportId}`
+        `${apiBaseUrl}/api/reports/saved-reports/${reportId}`
       );
       message.success("Report deleted successfully");
       fetchSavedReports();

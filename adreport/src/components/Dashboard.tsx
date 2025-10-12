@@ -8,6 +8,8 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -15,7 +17,7 @@ const Dashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8000/api/reports/summary');
+      const response = await axios.get(`${apiBaseUrl}/api/reports/summary`);
       const item = response.data;
       setData({
         total_requests: item.ad_exchange_total_requests || 0,

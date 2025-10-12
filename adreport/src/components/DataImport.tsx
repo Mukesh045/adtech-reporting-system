@@ -10,13 +10,15 @@ const DataImport: React.FC = () => {
   const [importJob, setImportJob] = useState<ImportJob | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
 
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
   const handleUpload = async (file: File): Promise<void> => {
     setUploading(true);
     const formData = new FormData();
     formData.append('file', file);
 
     try {
-      const response = await axios.post<{ job_id: string }>('http://localhost:8000/api/data/import', formData, {
+      const response = await axios.post<{ job_id: string }>(`${apiBaseUrl}/api/data/import`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -35,7 +37,7 @@ const DataImport: React.FC = () => {
   const pollJobStatus = async (jobId: string): Promise<void> => {
     const interval = setInterval(async () => {
       try {
-        const response = await axios.get<ImportJob>(`http://localhost:8000/api/data/import/${jobId}`);
+        const response = await axios.get<ImportJob>(`${apiBaseUrl}/api/data/import/${jobId}`);
         const job = response.data;
         setImportJob(job);
 

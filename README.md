@@ -186,6 +186,7 @@ Error responses: JSON `{ "detail": "Error message" }` with HTTP 4xx/5xx.
 7. **Update CORS**: In `backend/main.py`, update `allow_origins` to include your frontend URL (e.g., `["https://your-frontend.vercel.app"]`).
 8. **Verify API Docs**: Access https://your-app.railway.app/docs for Swagger UI.
 
+
 ### Database Setup (MongoDB Atlas)
 1. **Create Account**: Sign up at [cloud.mongodb.com](https://cloud.mongodb.com).
 2. **Create Cluster**: Choose a free M0 cluster > Select region > Create cluster (takes ~5-10 mins).
@@ -193,6 +194,7 @@ Error responses: JSON `{ "detail": "Error message" }` with HTTP 4xx/5xx.
 4. **Get Connection String**: Clusters > Connect > Connect your application > Copy the string: `mongodb+srv://user:pass@cluster.mongodb.net/adreport?retryWrites=true&w=majority`.
 5. **Whitelist IPs**: Network Access > Add IP Address > Allow Access from Anywhere (0.0.0.0/0) for development.
 6. **Add to Backend Env Vars**: Paste the connection string as `MONGODB_URI` in Railway variables.
+
 
 ### Frontend Deployment (Vercel)
 1. **Push Code to GitHub**: Ensure frontend code is in the repo (e.g., in `adreport/` or root).
@@ -247,7 +249,5 @@ Costs: Free tiers available (Railway: $5/month credit, Vercel: generous free pla
 ## Contributing
 Fork, PR with tests. Follow PEP8 for Python, ESLint for TS.
 
-## License
-MIT.
-
+## Contact me
 For questions, contact [msingh782004@gmail.com].
