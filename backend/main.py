@@ -20,6 +20,8 @@ db_connected = False
 app = FastAPI(
     title="Adtech Reporting API", version="1.0.0")
 
+logger.info("Starting app initialization")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://adreport-frontend-djqfzwha6-mukesh-singhs-projects-92ca7639.vercel.app/", "http://localhost:3000"],  # Production Vercel frontend and local dev
@@ -32,6 +34,7 @@ app.add_middleware(
 @app.on_event("startup")
 async def on_startup():
     """Initialize database connection and Beanie ODM on app startup."""
+    logger.info("Startup event triggered")
     mongodb_url = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
     logger.info(f"Connecting to MongoDB at {mongodb_url}")
     client = motor.motor_asyncio.AsyncIOMotorClient(
@@ -55,8 +58,11 @@ async def root():
 
 @app.get("/health")
 async def health():
+    logger.info("Health endpoint called")
     return {"status": "healthy" if db_connected else "unhealthy", "db_connected": db_connected}
 
 # Include the routers in the application
+logger.info("Including data router")
 app.include_router(data_router, prefix="/api/data", tags=["data"])
+logger.info("Including reports router")
 app.include_router(reports_router, prefix="/api/reports", tags=["reports"])
