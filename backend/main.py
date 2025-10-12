@@ -15,12 +15,14 @@ from routers.reports import router as reports_router
 
 load_dotenv()
 
+db_connected = False
+
 app = FastAPI(
     title="Adtech Reporting API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://your-frontend-domain.vercel.app", "http://localhost:3000"],  # Add production frontend URL
+    allow_origins=["https://adreport-frontend-djqfzwha6-mukesh-singhs-projects-92ca7639.vercel.app/", "http://localhost:3000"],  # Production Vercel frontend and local dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,6 +41,8 @@ async def on_startup():
     # Initialize Beanie with the AdReport document model
     try:
         await init_beanie(database=database, document_models=[AdReport, SavedReport])
+        global db_connected
+        db_connected = True
         logger.info("Database connection and Beanie initialization completed")
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
@@ -47,6 +51,11 @@ async def on_startup():
 @app.get("/")
 async def root():
     return {"message": "Adtech Reporting API"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy" if db_connected else "unhealthy", "db_connected": db_connected}
 
 # Include the routers in the application
 app.include_router(data_router, prefix="/api/data", tags=["data"])
