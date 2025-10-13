@@ -53,6 +53,7 @@ class ImportJob(Document):
     processed_records: Optional[int] = None
     errors: List[str] = []
     inserted: int = 0
+    created_at: datetime
 
     class Settings:
         name = "import_jobs"

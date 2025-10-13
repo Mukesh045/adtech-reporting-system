@@ -31,7 +31,7 @@ async def import_csv(background_tasks: BackgroundTasks, file: UploadFile = File(
     logger.info(f"Created job {job_id}")
 
     # Save to DB
-    import_job_doc = ImportJob(job_id=job_id, status="pending", progress=0, errors=[], inserted=0)
+    import_job_doc = ImportJob(job_id=job_id, status="pending", progress=0, errors=[], inserted=0, created_at=datetime.utcnow())
     await import_job_doc.insert()
 
     # Process in background
