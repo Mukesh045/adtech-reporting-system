@@ -22,7 +22,7 @@ app = FastAPI(
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://adreport-frontend-new.vercel.app", "https://adreport-frontend-itxl89sd7-mukesh-singhs-projects-92ca7639.vercel.app", "http://localhost:3000", "https://adreport-frontend.vercel.app", "https://adreport-frontend-e8swr3txt-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-r1t28opey-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-62wgtx28t-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-qsvrj9jxn-mukesh-singhs-projects-92ca7639.vercel.app"],  # Production Vercel frontends and local dev
+    allow_origins=["https://adreport-frontend-new.vercel.app", "https://adreport-frontend-itxl89sd7-mukesh-singhs-projects-92ca7639.vercel.app", "http://localhost:3000", "https://adreport-frontend.vercel.app", "https://adreport-frontend-e8swr3txt-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-r1t28opey-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-62wgtx28t-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-qsvrj9jxn-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-pp4bo88er-mukesh-singhs-projects-92ca7639.vercel.app"],  # Production Vercel frontends and local dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
