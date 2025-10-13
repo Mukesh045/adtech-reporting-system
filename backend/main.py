@@ -54,7 +54,7 @@ logger.info("Starting app initialization")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://adreport-frontend-new.vercel.app", "https://adreport-frontend-itxl89sd7-mukesh-singhs-projects-92ca7639.vercel.app", "http://localhost:3000", "https://adreport-frontend.vercel.app", "https://adreport-frontend-e8swr3txt-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-l5v9fm61m-mukesh-singhs-projects-92ca7639.vercel.app"],  # Production Vercel frontends and local dev
+    allow_origins=["https://adreport-frontend-new.vercel.app", "https://adreport-frontend-itxl89sd7-mukesh-singhs-projects-92ca7639.vercel.app", "http://localhost:3000", "https://adreport-frontend.vercel.app", "https://adreport-frontend-e8swr3txt-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-l5v9fm61m-mukesh-singhs-projects-92ca7639.vercel.app", "https://adreport-frontend-msehqyc1k-mukesh-singhs-projects-92ca7639.vercel.app"],  # Production Vercel frontends and local dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
