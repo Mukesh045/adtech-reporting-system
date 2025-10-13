@@ -6,7 +6,11 @@ import { ImportJob } from '../types';
 
 const { Dragger } = Upload;
 
-const DataImport: React.FC = () => {
+interface DataImportProps {
+  onDataUploaded: () => void;
+}
+
+const DataImport: React.FC<DataImportProps> = ({ onDataUploaded }) => {
   const [importJob, setImportJob] = useState<ImportJob | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
 
@@ -46,6 +50,7 @@ const DataImport: React.FC = () => {
           setUploading(false);
           if (job.status === 'completed') {
             message.success('Import completed successfully');
+            onDataUploaded(); // Notify parent component that data has been uploaded
           } else {
             message.error('Import failed');
           }

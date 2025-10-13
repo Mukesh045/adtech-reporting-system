@@ -12,6 +12,7 @@ const { Header, Content, Sider } = Layout;
 const App: React.FC = () => {
   const [selectedKey, setSelectedKey] = useState<string>('1');
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [hasDataUploaded, setHasDataUploaded] = useState<boolean>(false);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -38,13 +39,13 @@ const App: React.FC = () => {
   const renderContent = (): React.ReactElement => {
     switch (selectedKey) {
       case '1':
-        return <DataImport />;
+        return <DataImport onDataUploaded={() => setHasDataUploaded(true)} />;
       case '2':
-        return <Dashboard />;
+        return hasDataUploaded ? <Dashboard /> : <div>Please upload data first to view the dashboard.</div>;
       case '3':
-        return <Reports />;
+        return hasDataUploaded ? <Reports /> : <div>Please upload data first to generate reports.</div>;
       default:
-        return <DataImport />;
+        return <DataImport onDataUploaded={() => setHasDataUploaded(true)} />;
     }
   };
 
