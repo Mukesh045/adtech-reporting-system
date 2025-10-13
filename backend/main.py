@@ -18,12 +18,13 @@ logger = logging.getLogger(__name__)
 # Import your Beanie model and routers
 try:
     logger.info("Attempting to import models")
-    from .models import AdReport, SavedReport
+    from .models import AdReport, SavedReport, ImportJob
     logger.info("Models imported successfully")
 except Exception as e:
     logger.error(f"Failed to import models: {e}")
     AdReport = None
     SavedReport = None
+    ImportJob = None
 
 try:
     logger.info("Attempting to import data router")
@@ -72,8 +73,8 @@ async def on_startup():
 
     # Initialize Beanie with the AdReport document model
     try:
-        if AdReport and SavedReport:
-            await init_beanie(database=database, document_models=[AdReport, SavedReport])
+        if AdReport and SavedReport and ImportJob:
+            await init_beanie(database=database, document_models=[AdReport, SavedReport, ImportJob])
             global db_connected
             db_connected = True
             logger.info("Database connection and Beanie initialization completed")

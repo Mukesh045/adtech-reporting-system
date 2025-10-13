@@ -45,6 +45,18 @@ class ImportJob(BaseModel):
     processed_records: Optional[int] = None
     errors: List[str] = []
 
+class ImportJob(Document):
+    job_id: str
+    status: str  # pending, processing, completed, failed
+    progress: int  # 0-100
+    total_records: Optional[int] = None
+    processed_records: Optional[int] = None
+    errors: List[str] = []
+    inserted: int = 0
+
+    class Settings:
+        name = "import_jobs"
+
 class SavedReport(Document):
     name: str
     dimensions: List[str]

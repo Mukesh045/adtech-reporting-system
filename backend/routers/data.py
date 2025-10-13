@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
-from ..models import AdReport
+from ..models import AdReport, ImportJob
 from ..database import get_database
 import pandas as pd
 import io
