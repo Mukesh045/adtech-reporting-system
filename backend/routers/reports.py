@@ -185,6 +185,11 @@ async def get_dashboard_summary(report_id: str = None):
     match_stage = {}
     if report_id:
         match_stage["report_id"] = report_id
+    if date_range:
+        match_stage["date"] = {
+            "$gte": datetime.combine(date_range.start, datetime.min.time()),
+            "$lte": datetime.combine(date_range.end, datetime.max.time())
+        }
 
     pipeline = [
         {"$match": match_stage} if match_stage else {},

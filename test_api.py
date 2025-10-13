@@ -5,7 +5,7 @@ import csv
 import io
 
 # Base URL for the API (adjust if running on a different port)
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://adtech-reporting-system-production.up.railway.app"
 
 def test_import_csv():
     """Test POST /api/data/import: Upload CSV file and return import job ID"""
