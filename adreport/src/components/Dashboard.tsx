@@ -4,7 +4,11 @@ import { DollarOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons
 import axios from 'axios';
 import { DashboardData } from '../types';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  refreshTrigger?: number;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ refreshTrigger }) => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -12,7 +16,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [refreshTrigger]);
 
   const fetchDashboardData = async () => {
     setLoading(true);

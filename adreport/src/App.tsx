@@ -13,6 +13,7 @@ const App: React.FC = () => {
   const [selectedKey, setSelectedKey] = useState<string>('1');
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [hasDataUploaded, setHasDataUploaded] = useState<boolean>(false);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -39,13 +40,19 @@ const App: React.FC = () => {
   const renderContent = (): React.ReactElement => {
     switch (selectedKey) {
       case '1':
-        return <DataImport onDataUploaded={() => setHasDataUploaded(true)} />;
+        return <DataImport onDataUploaded={() => {
+          setHasDataUploaded(true);
+          setRefreshTrigger(prev => prev + 1);
+        }} />;
       case '2':
-        return hasDataUploaded ? <Dashboard /> : <div>Please upload data first to view the dashboard.</div>;
+        return hasDataUploaded ? <Dashboard refreshTrigger={refreshTrigger} /> : <div>Please upload data first to view the dashboard.</div>;
       case '3':
         return hasDataUploaded ? <Reports /> : <div>Please upload data first to generate reports.</div>;
       default:
-        return <DataImport onDataUploaded={() => setHasDataUploaded(true)} />;
+        return <DataImport onDataUploaded={() => {
+          setHasDataUploaded(true);
+          setRefreshTrigger(prev => prev + 1);
+        }} />;
     }
   };
 
