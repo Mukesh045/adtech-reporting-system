@@ -30,16 +30,39 @@ async def import_csv(background_tasks: BackgroundTasks, file: UploadFile = File(
     import_jobs[job_id] = {"job_id": job_id, "status": "pending", "progress": 0, "errors": [], "inserted": 0}
     logger.info(f"Created job {job_id}")
 
+    # Save to DB
+    import_job_doc = ImportJob(job_id=job_id, status="pending", progress=0, errors=[], inserted=0)
+    await import_job_doc.insert()
+
     # Process in background
     background_tasks.add_task(process_csv, job_id, contents)
 
     return {"job_id": job_id, "message": "Import started"}
 
+@router.get("/import")
+async def get_import_jobs():
+    # Return list of recent import jobs
+    jobs = await ImportJob.find().sort([("created_at", -1)]).limit(10).to_list()
+    return {"jobs": [{"job_id": job.job_id, "status": job.status, "progress": job.progress, "created_at": job.created_at} for job in jobs]}
+
 @router.get("/import/{job_id}")
 async def get_import_status(job_id: str):
-    if job_id not in import_jobs:
-        raise HTTPException(status_code=404, detail="not found jobs")
-    return import_jobs[job_id]
+    # Try in-memory first
+    if job_id in import_jobs:
+        return import_jobs[job_id]
+    # Fallback to DB
+    job_doc = await ImportJob.find_one(ImportJob.job_id == job_id)
+    if not job_doc:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return {
+        "job_id": job_doc.job_id,
+        "status": job_doc.status,
+        "progress": job_doc.progress,
+        "errors": job_doc.errors,
+        "inserted": job_doc.inserted,
+        "total_records": getattr(job_doc, 'total_records', None),
+        "processed_records": getattr(job_doc, 'processed_records', None)
+    }
 
 @router.get("/count")
 async def get_data_count():
