@@ -33,7 +33,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import moment from "moment";
+import dayjs from "dayjs";
 import {
   ReportQueryRequest,
   ReportResponse,
@@ -51,7 +51,7 @@ const Reports: React.FC = () => {
   const [selectedDimensions, setSelectedDimensions] = useState<string[]>([]);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<
-    [moment.Moment, moment.Moment] | null
+    [dayjs.Dayjs, dayjs.Dayjs] | null
   >(null);
   const [data, setData] = useState<ReportData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,9 +62,11 @@ const Reports: React.FC = () => {
   const [saveModalVisible, setSaveModalVisible] = useState<boolean>(false);
   const [loadModalVisible, setLoadModalVisible] = useState<boolean>(false);
   const [reportName, setReportName] = useState<string>("");
+  const [hasData, setHasData] = useState<boolean>(false);
 
   useEffect(() => {
     fetchDimensionsAndMetrics();
+    checkHasData();
   }, []);
 
   const fetchDimensionsAndMetrics = async (): Promise<void> => {
@@ -77,6 +79,16 @@ const Reports: React.FC = () => {
       setMetrics(metRes.data);
     } catch (error) {
       message.error("Failed to load dimensions and metrics");
+    }
+  };
+
+  const checkHasData = async (): Promise<void> => {
+    try {
+      const response = await axios.get<{ has_data: boolean }>(`${apiBaseUrl}/api/reports/has_data`);
+      setHasData(response.data.has_data);
+    } catch (error) {
+      console.error("Failed to check if data exists", error);
+      setHasData(false);
     }
   };
 
@@ -107,8 +119,8 @@ const Reports: React.FC = () => {
         request
       );
       setData(response.data.data);
-    } catch (error) {
-      message.error("Failed to fetch report data");
+    } catch (error: any) {
+      message.error(error.response?.data?.detail || error.response?.data || error.message || "Failed to fetch report data");
     } finally {
       setLoading(false);
     }
@@ -146,14 +158,20 @@ const Reports: React.FC = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-    } catch (error) {
-      message.error("Failed to export data");
+    } catch (error: any) {
+      message.error(error.response?.data?.detail || error.response?.data || error.message || "Failed to export data");
     }
   };
 
   const handleDateRangeChange = (dates: any): void => {
     if (dates && dates[0] && dates[1]) {
-      setDateRange([moment(dates[0].toDate()), moment(dates[1].toDate())]);
+      const startDate = dayjs(dates[0].toDate());
+      const endDate = dayjs(dates[1].toDate());
+      if (endDate.isBefore(startDate)) {
+        message.error("End date must be after or equal to start date");
+        return;
+      }
+      setDateRange([startDate, endDate]);
     } else {
       setDateRange(null);
     }
@@ -189,8 +207,8 @@ const Reports: React.FC = () => {
       setSaveModalVisible(false);
       setReportName("");
       fetchSavedReports();
-    } catch (error) {
-      message.error("Failed to save report");
+    } catch (error: any) {
+      message.error(error.response?.data?.detail || error.response?.data || error.message || "Failed to save report");
     }
   };
 
@@ -210,8 +228,8 @@ const Reports: React.FC = () => {
     setSelectedMetrics(report.metrics);
     if (report.date_range) {
       setDateRange([
-        moment(report.date_range.start),
-        moment(report.date_range.end),
+        dayjs(report.date_range.start),
+        dayjs(report.date_range.end),
       ]);
     } else {
       setDateRange(null);
@@ -324,6 +342,12 @@ const Reports: React.FC = () => {
                   style={{ width: "100%", marginTop: 8 }}
                   onChange={handleDateRangeChange}
                   aria-label="Select date range for report"
+                  disabledDate={(current, info) => {
+                    if ((info.type as string) === 'end' && dateRange && dateRange[0]) {
+                      return current && current < dateRange[0];
+                    }
+                    return false;
+                  }}
                 />
               </div>
             </Col>
@@ -336,6 +360,7 @@ const Reports: React.FC = () => {
               block
               onClick={handleQuery}
               loading={loading}
+              disabled={!hasData}
               icon={<span style={{ fontSize: "20px" }}></span>} // Add this if you want to increase icon size
             >
               <span style={{ fontSize: "18px" }}>Generate Report</span>
@@ -345,6 +370,7 @@ const Reports: React.FC = () => {
               size="large"
               block
               onClick={handleExport}
+              disabled={!hasData}
             >
               <span style={{ fontSize: "18px" }}>Export CSV</span>
             </Button>
@@ -353,6 +379,7 @@ const Reports: React.FC = () => {
               size="large"
               block
               onClick={() => setSaveModalVisible(true)}
+              disabled={!hasData}
             >
               <span style={{ fontSize: "18px" }}>Save Report</span>
             </Button>
@@ -364,6 +391,7 @@ const Reports: React.FC = () => {
                 fetchSavedReports();
                 setLoadModalVisible(true);
               }}
+              disabled={!hasData}
             >
               <span style={{ fontSize: "18px" }}>Load Report</span>
             </Button>

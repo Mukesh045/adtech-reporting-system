@@ -72,6 +72,12 @@ async def get_dimensions():
 async def get_metrics():
     return METRICS
 
+@router.get("/has_data")
+async def has_data():
+    collection = AdReport.get_pymongo_collection()
+    count = await collection.count_documents({})
+    return {"has_data": count > 0}
+
 import logging
 
 logger = logging.getLogger("uvicorn.error")
@@ -155,7 +161,7 @@ async def query_reports(request: ReportQueryRequest, base_pipeline: List[Dict] =
     logger.info(f"Aggregation results count: {len(results)}")
 
     if not results or not results[0]["metadata"]:
-        return {"data": [], "total": 0, "page": request.page, "limit": request.limit}
+        raise HTTPException(status_code=404, detail="No data available. Please upload data first.")
 
     return {
         "data": results[0]["data"],
@@ -298,8 +304,7 @@ async def export_reports(request: ReportQueryRequest, base_pipeline: List[Dict] 
     results = await cursor.to_list(length=None)
 
     if not results:
-        # Return empty CSV with headers
-        df = pd.DataFrame(columns=request.dimensions + request.metrics)
+        raise HTTPException(status_code=404, detail="No data available. Please upload data first.")
     else:
         df = pd.DataFrame(results)
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Upload, Progress, message, Card } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Upload, Progress, message, Card, Button, Popconfirm } from 'antd';
+import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { ImportJob } from '../types';
 
@@ -74,6 +74,17 @@ const DataImport: React.FC<DataImportProps> = ({ onDataUploaded }) => {
     showUploadList: false,
   };
 
+  const handleDeleteAllData = async (): Promise<void> => {
+    try {
+      await axios.delete(`${apiBaseUrl}/api/data/delete-all`);
+      message.success('All data deleted successfully');
+      onDataUploaded(); // Refresh parent component
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.detail || error.message || 'Delete failed';
+      message.error(`Delete failed: ${errorMessage}`);
+    }
+  };
+
   return (
     <div>
       <div className="import-section">
@@ -84,6 +95,27 @@ const DataImport: React.FC<DataImportProps> = ({ onDataUploaded }) => {
           <p className="ant-upload-hint" style={{ fontSize: '20px' }}><strong>Support for CSV files with adtech reporting data</strong> </p>
         </Dragger>
       </Card>
+      </div>
+
+      <div style={{ marginTop: 16, textAlign: 'center' }}>
+        <Popconfirm
+          title="Are you sure you want to delete all existing data?"
+          description="This action cannot be undone."
+          onConfirm={handleDeleteAllData}
+          okText="Yes, Delete All"
+          cancelText="Cancel"
+          okButtonProps={{ danger: true }}
+        >
+          <Button
+            type="primary"
+            danger
+            icon={<DeleteOutlined />}
+            size="large"
+            style={{ fontSize: '18px' }}
+          >
+            Delete All Existing Data
+          </Button>
+        </Popconfirm>
       </div>
 
       {importJob && (
