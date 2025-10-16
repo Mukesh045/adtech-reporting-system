@@ -44,7 +44,11 @@ import {
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const Reports: React.FC = () => {
+interface ReportsProps {
+  refreshTrigger?: number;
+}
+
+const Reports: React.FC<ReportsProps> = ({ refreshTrigger = 0 }) => {
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
   const [dimensions, setDimensions] = useState<string[]>([]);
   const [metrics, setMetrics] = useState<string[]>([]);
@@ -67,7 +71,7 @@ const Reports: React.FC = () => {
   useEffect(() => {
     fetchDimensionsAndMetrics();
     checkHasData();
-  }, []);
+  }, [refreshTrigger]);
 
   const fetchDimensionsAndMetrics = async (): Promise<void> => {
     try {

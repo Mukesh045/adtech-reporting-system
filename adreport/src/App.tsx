@@ -47,7 +47,7 @@ const App: React.FC = () => {
       case '2':
         return hasDataUploaded ? <Dashboard refreshTrigger={refreshTrigger} /> : <div>Please upload data first to view the dashboard.</div>;
       case '3':
-        return hasDataUploaded ? <Reports /> : <div>Please upload data first to generate reports.</div>;
+        return hasDataUploaded ? <Reports refreshTrigger={refreshTrigger} /> : <div>Please upload data first to generate reports.</div>;
       default:
         return <DataImport onDataUploaded={() => {
           setHasDataUploaded(true);
