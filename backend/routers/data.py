@@ -71,6 +71,15 @@ async def get_data_count():
     count = await collection.count_documents({})
     return {"count": count}
 
+@router.delete("/delete-all")
+async def delete_all_data():
+    try:
+        await AdReport.delete_all()
+        return {"message": "All data deleted successfully"}
+    except Exception as e:
+        logger.error(f"Failed to delete all data: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to delete data")
+
 async def process_csv(job_id: str, contents: bytes):
     logger.info(f"Starting background processing for job {job_id}")
     try:
