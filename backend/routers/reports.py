@@ -79,6 +79,12 @@ logger = logging.getLogger("uvicorn.error")
 @router.post("/query")
 async def query_reports(request: ReportQueryRequest, base_pipeline: List[Dict] = Depends(validate_and_build_pipeline)):
 
+    # Check if there's any data in the collection
+    collection = AdReport.get_pymongo_collection()
+    data_count = await collection.count_documents({})
+    if data_count == 0:
+        raise HTTPException(status_code=400, detail="No data available. Please upload data first.")
+
     # Separate countable metrics from calculated rates
     sum_metrics = [m for m in request.metrics if m not in ["ad_exchange_match_rate", "ad_exchange_line_item_level_ctr", "average_ecpm"]]
 
@@ -148,7 +154,6 @@ async def query_reports(request: ReportQueryRequest, base_pipeline: List[Dict] =
 
     logger.info(f"Aggregation pipeline: {pipeline}")
 
-    collection = AdReport.get_pymongo_collection()
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)
 
@@ -246,6 +251,12 @@ async def get_dashboard_summary(report_id: str = None):
 @router.post("/export")
 async def export_reports(request: ReportQueryRequest, base_pipeline: List[Dict] = Depends(validate_and_build_pipeline)):
 
+    # Check if there's any data in the collection
+    collection = AdReport.get_pymongo_collection()
+    data_count = await collection.count_documents({})
+    if data_count == 0:
+        raise HTTPException(status_code=400, detail="No data available. Please upload data first.")
+
     sum_metrics = [m for m in request.metrics if m not in ["ad_exchange_match_rate", "ad_exchange_line_item_level_ctr", "average_ecpm"]]
 
     group_stage = {
@@ -293,7 +304,6 @@ async def export_reports(request: ReportQueryRequest, base_pipeline: List[Dict] 
     if request.dimensions:
         pipeline.append({"$sort": {request.dimensions[0]: 1}})
 
-    collection = AdReport.get_pymongo_collection()
     cursor = collection.aggregate(pipeline)
     results = await cursor.to_list(length=None)
 
@@ -319,6 +329,12 @@ class SaveReportRequest(BaseModel):
 
 @router.post("/saved-reports")
 async def save_report(request: SaveReportRequest):
+    # Check if there's any data in the collection
+    collection = AdReport.get_pymongo_collection()
+    data_count = await collection.count_documents({})
+    if data_count == 0:
+        raise HTTPException(status_code=400, detail="No data available. Please upload data first")
+
     saved_report = SavedReport(
         name=request.name,
         dimensions=request.dimensions,
