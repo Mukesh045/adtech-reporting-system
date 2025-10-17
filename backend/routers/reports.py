@@ -72,6 +72,13 @@ async def get_dimensions():
 async def get_metrics():
     return METRICS
 
+@router.get("/has_data")
+async def has_data():
+    """Check if there's any data in the collection."""
+    collection = AdReport.get_pymongo_collection()
+    data_count = await collection.count_documents({})
+    return {"has_data": data_count > 0}
+
 import logging
 
 logger = logging.getLogger("uvicorn.error")
