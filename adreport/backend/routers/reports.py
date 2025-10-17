@@ -74,9 +74,10 @@ async def get_metrics():
 
 @router.get("/has_data")
 async def has_data():
+    """Check if there's any data in the collection."""
     collection = AdReport.get_pymongo_collection()
-    count = await collection.count_documents({})
-    return {"has_data": count > 0}
+    data_count = await collection.count_documents({})
+    return {"has_data": data_count > 0}
 
 import logging
 
